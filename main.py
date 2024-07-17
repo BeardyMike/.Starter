@@ -40,8 +40,6 @@ gui_X = 650
 gui_Y = 450
 gui_sidebar_width = 140
 gui_main_frame_width = gui_X - gui_sidebar_width
-dark_main_frame_colour = "#242424"
-light_main_frame_colour = "#f0f0f0"
 ##############################################################################
 
 
@@ -86,6 +84,10 @@ def ini_write(section, key, value):
     with open('data.ini', 'w') as configfile:
         config.write(configfile)
 
+customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
+customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
+main_frame_colour = ("#EBEBEB","#1A1A1A")
+
 ##############################################################################
 
 
@@ -97,7 +99,7 @@ def ini_write(section, key, value):
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
-
+        
         def page1_button():
             print("Page 1 Button Pressed")
             self.main_frame.destroy()
@@ -110,31 +112,28 @@ class App(customtkinter.CTk):
             self.main_frame = Page2Frame(self)
             ini_write('main', 'active_page', "2") 
            
-
         def page3_button():
             print("Page 3 Button Pressed")
             self.main_frame.destroy()
             self.main_frame = Page3Frame(self)
             ini_write('main', 'active_page', "3") 
    
-               
         def page4_button():
             print("Page 4 Button Pressed")
             self.main_frame.destroy()
             self.main_frame = Page4Frame(self)
             ini_write('main', 'active_page', "4") 
 
-
         def page5_button():
             print("Page 5 Button Pressed")
             self.main_frame.destroy()
             self.main_frame = Page5Frame(self)
             ini_write('main', 'active_page', "5") 
-
-                      
+       
         # Configure window
         self.title("")
-        self.resizable(False, False)    
+        self.resizable(False, False)
+           
 
         # Configure grid layout (4x4)
         self.grid_columnconfigure(0, weight=0)
@@ -187,7 +186,7 @@ class App(customtkinter.CTk):
         # Create page1_frame with widgets
         class Page1Frame(customtkinter.CTkFrame):
             def __init__(self, parent):
-                super().__init__(parent, corner_radius=0, width=gui_main_frame_width, fg_color=dark_main_frame_colour)
+                super().__init__(parent, corner_radius=0, width=gui_main_frame_width, fg_color=main_frame_colour)
                 self.grid(row=0, column=1, rowspan=5, sticky="nsew", padx=75)
 
                 self.config = configparser.ConfigParser()
@@ -237,16 +236,19 @@ class App(customtkinter.CTk):
         # Create page2_frame with widgets, it has lots of buttons and labels
         class Page2Frame(customtkinter.CTkFrame):
             def __init__(self, parent):
-                super().__init__(parent, corner_radius=0, width=gui_main_frame_width, fg_color=dark_main_frame_colour)
+                super().__init__(parent, corner_radius=0, width=gui_main_frame_width, fg_color=main_frame_colour)
                 self.grid(row=0, column=1, rowspan=8, columnspan=2, sticky="nsew", padx=150)
                 
                 def set_active_button(button, button_name):
                     # Remove border from all buttons
                     for btn in [self.button1, self.button2, self.button3, self.button4, self.button5, self.button6]:
-                        btn.configure(border_color=dark_main_frame_colour)
+                        btn.configure(border_color=main_frame_colour)
                     
                     # Set green border around the active button
-                    button.configure(border_color="green")
+                    if button_name != "6":
+                        button.configure(border_color="green")
+                    else:
+                        button.configure(border_color="red")
                     
                     # Store the active button in the ini file
                     ini_write("page2", "active_button", button_name)
@@ -255,23 +257,23 @@ class App(customtkinter.CTk):
                 self.row1label = customtkinter.CTkLabel(self, text="")
                 self.row1label.grid(row=0, column=1, padx=15, pady=25)
                 # Create a set of buttons
-                self.button1 = customtkinter.CTkButton(self, border_width=4, border_color=dark_main_frame_colour, text="Button 1", font=("Segoe UI", 16), command=lambda: set_active_button(self.button1, "1"))
-                self.button1.grid(row=1, column=0, padx=15, pady=11)
+                self.button1 = customtkinter.CTkButton(self, corner_radius=10, border_width=4, border_color=main_frame_colour, text="Button 1", font=("Segoe UI", 16), command=lambda: [set_active_button(self.button1, "1"), self.button6.configure(state="disabled", text="Disabled")])
+                self.button1.grid(row=1, column=0, padx=15, pady=10)
 
-                self.button2 = customtkinter.CTkButton(self, border_width=4, border_color=dark_main_frame_colour, text="Button 2", font=("Segoe UI", 16), command=lambda: set_active_button(self.button2, "2"))
-                self.button2.grid(row=2, column=0, padx=15, pady=11)
+                self.button2 = customtkinter.CTkButton(self, corner_radius=10, border_width=4, border_color=main_frame_colour, text="Button 2", font=("Segoe UI", 16), command=lambda: set_active_button(self.button2, "2"))
+                self.button2.grid(row=2, column=0, padx=15, pady=10)
 
-                self.button3 = customtkinter.CTkButton(self, border_width=4, border_color=dark_main_frame_colour, text="Button 3", font=("Segoe UI", 16), command=lambda: set_active_button(self.button3, "3"))
-                self.button3.grid(row=3, column=0, padx=15, pady=11)
+                self.button3 = customtkinter.CTkButton(self, corner_radius=10, border_width=4, border_color=main_frame_colour, text="Button 3", font=("Segoe UI", 16), command=lambda: set_active_button(self.button3, "3"))
+                self.button3.grid(row=3, column=0, padx=15, pady=10)
 
-                self.button4 = customtkinter.CTkButton(self, border_width=4, border_color=dark_main_frame_colour, text="Button 4", font=("Segoe UI", 16), command=lambda: set_active_button(self.button4, "4"))
-                self.button4.grid(row=4, column=0, padx=15, pady=11)
+                self.button4 = customtkinter.CTkButton(self, corner_radius=10, border_width=4, border_color=main_frame_colour, text="Button 4", font=("Segoe UI", 16), command=lambda: set_active_button(self.button4, "4"))
+                self.button4.grid(row=4, column=0, padx=15, pady=10)
 
-                self.button5 = customtkinter.CTkButton(self, border_width=4, border_color=dark_main_frame_colour, text="Button 5", font=("Segoe UI", 16), command=lambda: set_active_button(self.button5, "5"))
-                self.button5.grid(row=5, column=0, padx=15, pady=11)
+                self.button5 = customtkinter.CTkButton(self, corner_radius=10, border_width=4, border_color=main_frame_colour, text="Button 5", font=("Segoe UI", 16), command=lambda: [set_active_button(self.button5, "5"), self.button6.configure(state="normal", text="Button 6")])
+                self.button5.grid(row=5, column=0, padx=15, pady=10)
 
-                self.button6 = customtkinter.CTkButton(self, border_width=4, border_color=dark_main_frame_colour, text="Disabled", font=("Segoe UI", 16), state="disabled", command=lambda: self.set_active_button(self.button6, "Button 6"))
-                self.button6.grid(row=6, column=0, padx=15, pady=11)
+                self.button6 = customtkinter.CTkButton(self, corner_radius=10, border_width=4, border_color=main_frame_colour, text="Disabled", font=("Segoe UI", 16), state="disabled", command=lambda: set_active_button(self.button6, "6"))
+                self.button6.grid(row=6, column=0, padx=15, pady=10)
 
                 # Read the active button from the ini file, and set the active button to the correct button
                 config = configparser.ConfigParser()
@@ -295,7 +297,7 @@ class App(customtkinter.CTk):
         # Create page3_frame with widgets
         class Page3Frame(customtkinter.CTkFrame):
             def __init__(self, parent):
-                super().__init__(parent, corner_radius=0, width=gui_main_frame_width, fg_color=dark_main_frame_colour)
+                super().__init__(parent, corner_radius=0, width=gui_main_frame_width, fg_color=main_frame_colour)
                 self.grid(row=0, column=1, rowspan=6, sticky="nsew", padx=25)
 
                 # Create a blank label for row 1
@@ -305,7 +307,7 @@ class App(customtkinter.CTk):
         # Create page4_frame with widgets
         class Page4Frame(customtkinter.CTkFrame):
             def __init__(self, parent):
-                super().__init__(parent, corner_radius=0, width=gui_main_frame_width, fg_color=dark_main_frame_colour)
+                super().__init__(parent, corner_radius=0, width=gui_main_frame_width, fg_color=main_frame_colour)
                 self.grid(row=0, column=1, rowspan=6, sticky="nsew", padx=25)
 
                 # Create a blank label for row 1
@@ -315,7 +317,7 @@ class App(customtkinter.CTk):
         # Create page5_frame with widgets
         class Page5Frame(customtkinter.CTkFrame):
             def __init__(self, parent):
-                super().__init__(parent, corner_radius=0, width=gui_main_frame_width, fg_color=dark_main_frame_colour)
+                super().__init__(parent, corner_radius=0, width=gui_main_frame_width, fg_color=main_frame_colour)
                 self.grid(row=0, column=1, rowspan=6, sticky="nsew", padx=25)
 
                 # Create a blank label for row 1
