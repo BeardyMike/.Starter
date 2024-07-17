@@ -134,13 +134,11 @@ class App(customtkinter.CTk):
         self.title("")
         self.resizable(False, False)
            
-
         # Configure grid layout (4x4)
         self.grid_columnconfigure(0, weight=0)
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
         
-
         # Create sidebar frame with widgets
         self.sidebar_frame = customtkinter.CTkFrame(self, width=gui_sidebar_width , corner_radius=0)
         self.sidebar_frame.grid(row=0, column=0, rowspan=6, sticky="nsew")
@@ -180,9 +178,7 @@ class App(customtkinter.CTk):
         self.sidebar_button_5 = customtkinter.CTkButton(self.sidebar_frame, text="Page5", font=("Segoe UI", 16), command=page5_button)
         self.sidebar_button_5.grid(row=6, column=0, padx=20, pady=(125,10))
         self.sidebar_button_5.bind("<Enter>", lambda eff: on_hover(eff="None", event="Page5 Button"), add='+')
-
-
-            
+     
         # Create page1_frame with widgets
         class Page1Frame(customtkinter.CTkFrame):
             def __init__(self, parent):
@@ -199,7 +195,17 @@ class App(customtkinter.CTk):
 
                 # Create a slider
                 self.sliderval = customtkinter.IntVar(value=1)
-                self.slider = customtkinter.CTkSlider(self, number_of_steps=100, from_=0, to=1, command=lambda x: [self.progress1.set(self.slider.get()), self.progress2.set(self.slider.get()),print(self.slider.get()),ini_write('page1', 'slider', str(self.slider.get())) ], variable=self.sliderval)
+                self.slider = customtkinter.CTkSlider(self, 
+                                                    number_of_steps=100, 
+                                                    from_=0, 
+                                                    to=1, 
+                                                    command=lambda x: [
+                                                        self.progress1.set(self.slider.get()), 
+                                                        self.progress2.set(self.slider.get()),
+                                                        print(self.slider.get()),
+                                                        ini_write('page1', 'slider', str(self.slider.get()))
+                                                        ], 
+                                                    variable=self.sliderval)
                 self.slider.set(float(self.config['page1']['slider']))
                 self.slider.grid(row=1, column=1, padx=15, pady=20)
 
@@ -218,19 +224,43 @@ class App(customtkinter.CTk):
                 self.checkbox_var2 = customtkinter.StringVar(value=self.config['page1']['checkbox_var2'])
                 self.checkbox_var3 = customtkinter.StringVar(value=self.config['page1']['checkbox_var3'])
 
-                self.checkbox1 = customtkinter.CTkCheckBox(self, text="CheckBox 1", font=("Segoe UI", 16),
-                                                           command=lambda: [print("Checkbox1 checked") if self.checkbox_var1.get() == "on" else print("Checkbox1 unchecked"), ini_write('page1', 'checkbox_var1', self.checkbox_var1.get())],
-                                                           variable=self.checkbox_var1, onvalue="on", offvalue="off")
+                self.checkbox1 = customtkinter.CTkCheckBox(self, 
+                                                           text="CheckBox 1", 
+                                                           font=("Segoe UI", 16),
+                                                           command=lambda: [
+                                                                print("Checkbox1 checked") if self.checkbox_var1.get() == "on" else print("Checkbox1 unchecked"), 
+                                                                ini_write('page1', 'checkbox_var1', 
+                                                                self.checkbox_var1.get())
+                                                            ],
+                                                           variable=self.checkbox_var1, 
+                                                           onvalue="on", 
+                                                           offvalue="off")
                 self.checkbox1.grid(row=3, column=1, padx=15, pady=15)
 
-                self.checkbox2 = customtkinter.CTkCheckBox(self, text="CheckBox 2", font=("Segoe UI", 16),
-                                                           command=lambda: [print("Checkbox2 checked") if self.checkbox_var2.get() == "on" else print("Checkbox2 unchecked"), ini_write('page1', 'checkbox_var2', self.checkbox_var2.get())],
-                                                           variable=self.checkbox_var2, onvalue="on", offvalue="off")
+                self.checkbox2 = customtkinter.CTkCheckBox(self, 
+                                                           text="CheckBox 2", 
+                                                           font=("Segoe UI", 16),
+                                                           command=lambda: [
+                                                                print("Checkbox2 checked") if self.checkbox_var2.get() == "on" else print("Checkbox2 unchecked"), 
+                                                                ini_write('page1', 'checkbox_var2', 
+                                                                self.checkbox_var2.get())
+                                                            ],
+                                                           variable=self.checkbox_var2, 
+                                                           onvalue="on", 
+                                                           offvalue="off")
                 self.checkbox2.grid(row=4, column=1, padx=15, pady=15)
 
-                self.checkbox3 = customtkinter.CTkCheckBox(self, text="CheckBox 3", font=("Segoe UI", 16),
-                                                           command=lambda: [print("Checkbox3 checked") if self.checkbox_var3.get() == "on" else print("Checkbox3 unchecked"), ini_write('page1', 'checkbox_var3', self.checkbox_var3.get())],
-                                                           variable=self.checkbox_var3, onvalue="on", offvalue="off")
+                self.checkbox3 = customtkinter.CTkCheckBox(self, 
+                                                           text="CheckBox 3", 
+                                                           font=("Segoe UI", 16),
+                                                           command=lambda: [
+                                                                print("Checkbox3 checked") if self.checkbox_var3.get() == "on" else print("Checkbox3 unchecked"), 
+                                                                ini_write('page1', 'checkbox_var3', 
+                                                                self.checkbox_var3.get())
+                                                                ],
+                                                           variable=self.checkbox_var3, 
+                                                           onvalue="on", 
+                                                           offvalue="off")
                 self.checkbox3.grid(row=5, column=1, padx=15, pady=15)
 
         # Create page2_frame with widgets, it has lots of buttons and labels
@@ -292,8 +322,6 @@ class App(customtkinter.CTk):
                 else:
                     set_active_button(self.button1, "1")
                 
-
-
         # Create page3_frame with widgets
         class Page3Frame(customtkinter.CTkFrame):
             def __init__(self, parent):
@@ -340,8 +368,6 @@ class App(customtkinter.CTk):
             self.main_frame = Page5Frame(self)
         else:
             self.main_frame = Page1Frame(self)
-
-
 
 ##############################################################################
 
