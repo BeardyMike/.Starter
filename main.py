@@ -16,6 +16,7 @@
 
 # pip install customtkinter
 import customtkinter
+import sqlite3
 
 # pip install pystray
 import pystray
@@ -88,6 +89,63 @@ customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
 main_frame_colour = ("#EBEBEB","#1A1A1A")
 
+# Make sure the database is set up
+def sql_startup():
+    # Set up SQLite3 database connection
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    # Create table if it doesn't exist
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS data (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            email TEXT,
+            type TEXT
+        )
+    ''')
+    # Commit the changes and close the connection
+    conn.commit()
+    conn.close()
+
+def sql_print_all():
+    # Connect to SQLite3 database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Fetch all data from the table
+    cursor.execute("SELECT * FROM data")
+    data = cursor.fetchall()
+
+    # Print all data
+    for row in data:
+        print(row)
+
+    # Close the connection
+    conn.close()
+
+def sql_insert(table, values):
+    # Connect to SQLite3 database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Insert data into the table
+    cursor.execute(f"INSERT INTO {table} VALUES ({values})")
+
+    # Commit the changes and close the connection
+    conn.commit()
+    conn.close()
+
+def sql_update_where(table, values, where):
+    # Connect to SQLite3 database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Update data in the table
+    cursor.execute(f"UPDATE {table} SET {values} WHERE {where}")
+
+    # Commit the changes and close the connection
+    conn.commit()
+    conn.close()
 ##############################################################################
 
 
@@ -150,34 +208,34 @@ class App(customtkinter.CTk):
         self.logo_label.bind('<Button-1>', lambda e: print("The logo was clicked with the left mouse button"), add='+')
         self.logo_label.bind('<Button-2>', lambda p: print("The logo was clicked with the middle mouse button"), add='+')
         self.logo_label.bind('<Button-3>', lambda p: print("The logo was clicked with the right mouse button"), add='+')
-        self.logo_label.bind("<Enter>", lambda eff: on_hover(eff="None", event="the app logo"), add='+')
+        #self.logo_label.bind("<Enter>", lambda eff: on_hover(eff="None", event="the app logo"), add='+')
         self.logo_label.grid(row=0, column=0, padx=20, pady=25)
 
         # Create the sidebar buttons, each with a command that prints to the console
         # Page1 Button
         self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, text="Page1", font=("Segoe UI", 16), command=page1_button)
         self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
-        self.sidebar_button_1.bind("<Enter>", lambda eff: on_hover(eff="None", event="Page1 Button"), add='+')
+        #self.sidebar_button_1.bind("<Enter>", lambda eff: on_hover(eff="None", event="Page1 Button"), add='+')
 
         # Page2 Button
         self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, text="Page2", font=("Segoe UI", 16), command=page2_button)
         self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
-        self.sidebar_button_2.bind("<Enter>", lambda eff: on_hover(eff="None", event="Page2 Button"), add='+')
+        #self.sidebar_button_2.bind("<Enter>", lambda eff: on_hover(eff="None", event="Page2 Button"), add='+')
 
         # Page3 Button
         self.sidebar_button_3 = customtkinter.CTkButton(self.sidebar_frame, text="Page3", font=("Segoe UI", 16), command=page3_button)
         self.sidebar_button_3.grid(row=3, column=0, padx=20, pady=10)
-        self.sidebar_button_3.bind("<Enter>", lambda eff: on_hover(eff="None", event="Page3 Button"), add='+')
+        #self.sidebar_button_3.bind("<Enter>", lambda eff: on_hover(eff="None", event="Page3 Button"), add='+')
 
         # Page4 Button
         self.sidebar_button_4 = customtkinter.CTkButton(self.sidebar_frame, text="Page4", font=("Segoe UI", 16), command=page4_button)
         self.sidebar_button_4.grid(row=4, column=0, padx=20, pady=10)
-        self.sidebar_button_4.bind("<Enter>", lambda eff: on_hover(eff="None", event="Page4 Button"), add='+')
+        #self.sidebar_button_4.bind("<Enter>", lambda eff: on_hover(eff="None", event="Page4 Button"), add='+')
 
         # Page5 Button
         self.sidebar_button_5 = customtkinter.CTkButton(self.sidebar_frame, text="Page5", font=("Segoe UI", 16), command=page5_button)
         self.sidebar_button_5.grid(row=6, column=0, padx=20, pady=(125,10))
-        self.sidebar_button_5.bind("<Enter>", lambda eff: on_hover(eff="None", event="Page5 Button"), add='+')
+        #self.sidebar_button_5.bind("<Enter>", lambda eff: on_hover(eff="None", event="Page5 Button"), add='+')
      
         # Create page1_frame with widgets
         class Page1Frame(customtkinter.CTkFrame):
@@ -195,17 +253,7 @@ class App(customtkinter.CTk):
 
                 # Create a slider
                 self.sliderval = customtkinter.IntVar(value=1)
-                self.slider = customtkinter.CTkSlider(self, 
-                                                    number_of_steps=100, 
-                                                    from_=0, 
-                                                    to=1, 
-                                                    command=lambda x: [
-                                                        self.progress1.set(self.slider.get()), 
-                                                        self.progress2.set(self.slider.get()),
-                                                        print(self.slider.get()),
-                                                        ini_write('page1', 'slider', str(self.slider.get()))
-                                                        ], 
-                                                    variable=self.sliderval)
+                self.slider = customtkinter.CTkSlider(self,number_of_steps=100, from_=0, to=1,  command=lambda x: [self.progress1.set(self.slider.get()), self.progress2.set(self.slider.get()), print(self.slider.get()), ini_write('page1', 'slider', str(self.slider.get()))], variable=self.sliderval)
                 self.slider.set(float(self.config['page1']['slider']))
                 self.slider.grid(row=1, column=1, padx=15, pady=20)
 
@@ -396,6 +444,12 @@ app.protocol('WM_DELETE_WINDOW', withdraw_window)
 #
 # Start the main app
 # app.withdraw()
+
+# SQL Test
+# sql_startup()
+# sql_update_where("data","email='qwe@qwe.com',type='premium'", "id=2")
+# sql_print_all()
+
 app.mainloop()
 #
 ##############################################################################
